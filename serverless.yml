@@ -1,0 +1,50 @@
+app: plugpulse
+service: webserver
+
+package:
+  individually: true
+
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+custom:
+  serverless-offline:
+    lambdaPort: 6000
+  serverless-offline-ssm:
+    stages:
+      - local
+provider:
+  name: aws
+  runtime: python3.8
+  stage: dev
+
+  environment:
+    MONGO_RUL: "this is a fake url"
+
+functions:
+  webserver:
+    name: python_webserver
+    handler: OadrPoll.handler
+    events:
+      - http:
+          method: post
+          path: /webserver/OadrPoll # correct the path over here
+          cors: true
+
+  EiRegisterParty:
+    name: EiRegisterParty
+    handler: EiRegisterParty.handler
+    events:
+      - http:
+          method: post
+          path: /webserver/EiRegisterParty # correct the path over here
+          cors: true
+
+  EiEvent:
+    name: EiEvent
+    handler: EiEvent.handler
+    events:
+      - http:
+          method: post
+          path: /webserver/EiEvent # correct the path over here
+          cors: true
